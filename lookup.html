@@ -2,9 +2,7 @@
 <html lang="en">
 	<head>
 		<meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
-
 		<meta name="viewport" content="width=device-width, initial-scale=1, user-scalable=0" />
-
 		<script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.0.0/jquery.min.js"></script>
 	</head>
 	<body>
@@ -43,9 +41,43 @@
 		</table>
 
 		<script type="text/javascript">
-			// when somebody selects an option in the choice selection element, the script should make a get request to: http://mercury.cs.pdx.edu/exercise/ajax/lookup.json?name=max
-			// the data that is being received by this query is in the json format and might look like: { 'first':'max','last':'baum','gender':'male','random':'3BLJEkKk' }
-			// this received data should subsequently be used to set the first textbox, the last textbox, the gender radio button as well as the random textbox
+			// When somebody selects an option in the choice selection element,
+			//   the script should make a get request to:
+			//   http://mercury.cs.pdx.edu/exercise/ajax/lookup.json?name=max
+			// The data that is being received by this query is in the json
+			//   format and might look like: { 'first':'max','last':'baum',
+			//	 'gender':'male','random':'3BLJEkKk' }
+			// This received data should subsequently be used to set the first
+			//   textbox, the last textbox, the gender radio button as well as the
+			//   random textbox
+
+			$('#choice').on('input', function() {
+				console.log("selected:  " + $('#choice :selected').text() );
+				var s = $('#choice :selected').text()
+				jQuery.ajax({
+					'type': 'GET',
+					'url': 'http://mercury.cs.pdx.edu/exercise/ajax/lookup.json?name=' + s,
+					'dataType': 'json',
+					'success': function(data) {
+
+					console.log( 'parse: \n' + JSON.parse( JSON.stringify(data) ) );
+					var jObj = JSON.parse( JSON.stringify(data) );
+					console.log( jObj );
+					console.log( jObj.first );
+					console.log( jObj.last );
+
+					$('#first').val( jObj.first );
+					$('#last').val( jObj.last );
+					$('input:radio[name=gender][value="'+ jObj.gender + '"]' ).attr('checked', 'checked');
+					$('#random').val( jObj.random );
+
+					}});
+
+				});
+
+
+			//});
+
 		</script>
 	</body>
 </html>
